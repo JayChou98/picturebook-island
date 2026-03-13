@@ -4,8 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node node_modules/.bin/vite build",
-    "build:check": "vue-tsc && node node_modules/.bin/vite build",
+    "build": "npm exec -- vite build",
+    "build:check": "vue-tsc && npm exec -- vite build",
     "preview": "vite preview"
   },
   "dependencies": {
