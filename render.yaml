@@ -16,12 +16,14 @@ services:
         sync: false # Set manually in Render dashboard
       - key: CORS_ORIGIN
         value: https://picturebook-island.onrender.com
+    runtime: node18
 
   # Frontend Static Site
   - type: site
     name: picturebook-web
-    buildCommand: cd frontend && chmod +x build.sh && bash build.sh
+    buildCommand: cd frontend && npm install --legacy-peer-deps && npm run build
     publishPath: frontend/dist
     envVars:
       - key: VITE_API_URL
         value: https://picturebook-api.onrender.com
+    nodeVersion: "18.20.0"
