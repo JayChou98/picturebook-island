@@ -4,9 +4,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm exec -- vite build",
-    "build:check": "vue-tsc && npm exec -- vite build",
-    "preview": "vite preview"
+    "build": "vite build",
+    "build:check": "vue-tsc && vite build",
+    "preview": "vite preview",
+    "postinstall": "chmod +x node_modules/.bin/*"
   },
   "dependencies": {
     "vue": "^3.4.0",
