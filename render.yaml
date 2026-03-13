@@ -1,0 +1,27 @@
+services:
+  # Backend Service
+  - type: web
+    name: picturebook-api
+    env: node
+    buildCommand: cd server && npm install
+    startCommand: cd server && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: MONGODB_URI
+        sync: false # Set manually in Render dashboard
+      - key: JWT_SECRET
+        sync: false # Set manually in Render dashboard
+      - key: CORS_ORIGIN
+        value: https://picturebook-island.onrender.com
+
+  # Frontend Static Site
+  - type: site
+    name: picturebook-web
+    buildCommand: cd frontend && npm install && npm run build
+    publishPath: frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://picturebook-api.onrender.com
