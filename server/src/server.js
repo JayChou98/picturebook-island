@@ -25,7 +25,7 @@ const __dirname = path.dirname(__filename);
 // Connect to database
 connectDB();
 
-// Middleware
+// Middleware - Allow all origins for development and deployment
 const allowedOrigins = process.env.CORS_ORIGIN 
   ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
   : ['http://localhost:5173'];
@@ -38,7 +38,7 @@ app.use(cors({
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(null, true); // Allow all origins for now
     }
   },
   credentials: true
