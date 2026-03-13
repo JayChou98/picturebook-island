@@ -20,7 +20,7 @@ services:
   # Frontend Static Site
   - type: site
     name: picturebook-web
-    buildCommand: cd frontend && npm install --legacy-peer-deps && npm run build
+    buildCommand: cd frontend && chmod +x build.sh && bash build.sh
     publishPath: frontend/dist
     envVars:
       - key: VITE_API_URL
