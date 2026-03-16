@@ -13,6 +13,7 @@ import picturebookRoutes from './routes/picturebooks.js';
 import favoriteRoutes from './routes/favorites.js';
 import categoryRoutes from './routes/categories.js';
 import recommendationRoutes from './routes/recommendations.js';
+import seedRoutes from './routes/seed.js';
 
 dotenv.config();
 
@@ -44,6 +45,7 @@ app.use('/api/picturebooks', picturebookRoutes);
 app.use('/api/favorites', favoriteRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/recommendations', recommendationRoutes);
+app.use('/api/seed', seedRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
