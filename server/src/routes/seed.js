@@ -8,18 +8,23 @@ import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Seed data route (requires authentication for security)
+// Seed data route (requires authentication)
 router.post('/', protect, async (req, res) => {
   try {
-    // Only allow admins (check for specific email)
-    if (req.user.email !== 'test@example.com') {
-      return res.status(403).json({ message: 'Not authorized' });
-    }
+    // Check if data already exists
+    const existingCategories = await Category.countDocuments();
+    const existingBooks = await PictureBook.countDocuments();
 
-    // Clear existing data
-    await Category.deleteMany();
-    await PictureBook.deleteMany();
-    await User.deleteMany({ email: { $ne: req.user.email } }); // Don't delete the current user
+    if (existingCategories > 0 || existingBooks > 0) {
+      return res.json({
+        success: true,
+        message: 'Database already seeded',
+        counts: {
+          categories: existingCategories,
+          picturebooks: existingBooks
+        }
+      });
+    }
 
     // Age categories
     const ageCategories = [
@@ -36,7 +41,7 @@ router.post('/', protect, async (req, res) => {
       { name: '科普', type: 'theme', icon: '🔬', order: 4 },
       { name: '情感', type: 'theme', icon: '💝', order: 5 },
       { name: '传统文化', type: 'theme', icon: '🎎', order: 6 },
-      { name: '艺术', type: 'theme', icon: '🎨', order: 7 }
+      { name: '艺术', type: 'theme', icon: '??', order: 7 }
     ];
 
     // Sample picturebooks with placeholder images
@@ -90,6 +95,57 @@ router.post('/', protect, async (req, res) => {
           { pageNumber: 3, imageUrl: 'https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=800', text: '妈妈告诉小熊："勇敢不是不害怕，而是害怕也要试着去做。"' },
           { pageNumber: 4, imageUrl: 'https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=800', text: '小熊鼓起勇气，小心翼翼地走进水里，原来水一点也不可怕。' },
           { pageNumber: 5, imageUrl: 'https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=800', text: '小熊学会了游泳，和朋友们在水中快乐地玩耍，它明白了什么是真正的勇敢。' }
+        ]
+      },
+      {
+        title: '四季的颜色',
+        author: '赵敏',
+        illustrator: '孙杰',
+        description: '跟着小蝴蝶一起感受四季的变化和美丽的色彩。',
+        coverImage: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400',
+        ageRange: ['0-3', '3-6'],
+        theme: ['自然', '艺术'],
+        isPublished: true,
+        pages: [
+          { pageNumber: 1, imageUrl: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800', text: '春天来了，小蝴蝶飞到了绿色的草地上，到处都是嫩绿的新芽。' },
+          { pageNumber: 2, imageUrl: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800', text: '夏天到了，小蝴蝶飞到海边，海是蓝色的，天是蓝色的，一切都是蓝色的。' },
+          { pageNumber: 3, imageUrl: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800', text: '秋天来了，小蝴蝶飞到果园，苹果是红色的，梨子是黄色的，叶子是金色的。' },
+          { pageNumber: 4, imageUrl: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800', text: '冬天到了，小蝴蝶躲在温暖的地方，外面是白色的，世界变成了童话王国。' },
+          { pageNumber: 5, imageUrl: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800', text: '四季真美丽，每个季节都有自己的颜色，就像我们的生活丰富多彩。' }
+        ]
+      },
+      {
+        title: '小星星找朋友',
+        author: '吴强',
+        illustrator: '郑梅',
+        description: '一颗小星星在天空中寻找朋友，最终找到了属于它的位置。',
+        coverImage: 'https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=400',
+        ageRange: ['0-3'],
+        theme: ['自然', '情感'],
+        isPublished: true,
+        pages: [
+          { pageNumber: 1, imageUrl: 'https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800', text: '夜空中有一颗小星星，它很孤单，想找个朋友一起玩。' },
+          { pageNumber: 2, imageUrl: 'https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800', text: '小星星问月亮姐姐："月亮姐姐，你能和我做朋友吗？"' },
+          { pageNumber: 3, imageUrl: 'https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800', text: '月亮姐姐说："当然可以，你看，天空中还有很多星星呢。"' },
+          { pageNumber: 4, imageUrl: 'https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800', text: '小星星往四周一看，原来它有这么多同伴，大家一起在夜空中闪闪发光。' },
+          { pageNumber: 5, imageUrl: 'https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800', text: '小星星笑了，它再也不孤单了，因为它找到了属于自己的家。' }
+        ]
+      },
+      {
+        title: '神奇的种子',
+        author: '王芳',
+        illustrator: '李华',
+        description: '小女孩种下一颗神奇的种子，每天给它浇水，看着它慢慢长大。',
+        coverImage: 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=400',
+        ageRange: ['3-6'],
+        theme: ['自然', '成长'],
+        isPublished: true,
+        pages: [
+          { pageNumber: 1, imageUrl: 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=800', text: '小女孩从爷爷那里得到一颗神奇的种子，种子很小，像一粒沙子。' },
+          { pageNumber: 2, imageUrl: 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=800', text: '小女孩把种子种在花盆里，每天给它浇水，给它唱歌。' },
+          { pageNumber: 3, imageUrl: 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=800', text: '过了几天，种子发芽了，小小的绿芽从土里钻了出来。' },
+          { pageNumber: 4, imageUrl: 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=800', text: '小女孩继续照顾它，小芽越长越高，长出了叶子，开出了花。' },
+          { pageNumber: 5, imageUrl: 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=800', text: '原来这是一朵会微笑的花，它对小女孩说："谢谢你，是你让我开花。"' }
         ]
       }
     ];
